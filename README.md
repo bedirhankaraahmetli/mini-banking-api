@@ -1,4 +1,3 @@
-````markdown
 # Mini Banking API
 
 An enterprise-oriented, robust RESTful API for a banking application, built with modern Java and Spring Boot. 
@@ -30,7 +29,7 @@ a
    ```bash
    git clone [https://github.com/bedirhankaraahmetli/mini-banking-api.git](https://github.com/bedirhankaraahmetli/mini-banking-api.git)
    cd mini-banking-api
-````
+    ````
 
 2.  **Start the PostgreSQL database via Docker:**
 
