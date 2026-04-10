@@ -54,6 +54,3 @@ This project uses Springdoc OpenAPI for self-documenting API endpoints. Once the
 -----
 
 *Developed with enterprise architecture principles.*
-
-```
-```
