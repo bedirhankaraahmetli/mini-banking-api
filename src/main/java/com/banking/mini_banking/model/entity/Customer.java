@@ -1,5 +1,9 @@
 package com.banking.mini_banking.model.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +36,19 @@ public class Customer {
     @Column(nullable = false)
     private String password;
 
+    // One-to-many relationship with accounts. A customer can have multiple
+    // accounts. The "mappedBy" attribute indicates that the "customer" field in the
+    // Account class
+    // owns the relationship. CascadeType.ALL means that any operation (persist,
+    // merge, remove, etc.) performed on the customer will be cascaded to the
+    // associated accounts. orphanRemoval = true means that if an account is removed
+    // from the customer's account list, it will also be removed from the database.
+    @JsonIgnore // This annotation is used to prevent serialization of the accounts field when
+                // converting the Customer object to JSON. This is important to avoid
+                // potential infinite recursion issues when the Customer and Account
+                // entities reference each other.
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts;
 }
 
 // This class represents the Customer entity in the mini banking application. It

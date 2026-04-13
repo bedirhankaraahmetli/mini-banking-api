@@ -2,6 +2,8 @@ package com.banking.mini_banking.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,4 +47,29 @@ public class CustomerController {
         // response body.
     }
 
+    @GetMapping("/{customerId}")
+    @Operation(summary = "Get customer details", description = "Retrieves the details of a customer based on the provided customer ID.")
+    public ResponseEntity<Customer> getCustomerDetails(@PathVariable Long customerId) {
+        // The @PathVariable annotation is used to extract the customerId from the URL
+        // path. For example, if the request is made to /api/v1/customers/1, the
+        // customerId will be 1.
+
+        Customer customer = customerService.getCustomerById(customerId);
+        // Calls the service layer to retrieve the customer details based on the
+        // provided customer ID.
+
+        return ResponseEntity.ok(customer);
+        // Returns an HTTP 200 OK response with the customer details in the response
+        // body.
+    }
 }
+
+// This class is a REST controller in the Spring framework that handles HTTP
+// requests related to customers in the mini banking application. It defines
+// endpoints for creating new customers and retrieving customer details. The
+// controller uses the CustomerService to perform business logic operations,
+// such as creating customers and fetching customer details. The endpoints are
+// documented with Swagger annotations for better API documentation. The
+// createCustomer method accepts a JSON request body that is deserialized into a
+// CustomerCreateRequest object, while the getCustomerDetails method uses a path
+// variable to identify the customer whose details are being requested.

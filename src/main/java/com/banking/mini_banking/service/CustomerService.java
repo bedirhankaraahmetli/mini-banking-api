@@ -9,8 +9,7 @@ import com.banking.mini_banking.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service // Indicates that this class is a service component in the Spring framework. It
-         // is
-         // responsible for containing business logic related to customers in the mini
+         // is responsible for containing business logic related to customers in the mini
          // banking application.
 @RequiredArgsConstructor // Lombok annotation to generate a constructor with required arguments (final
                          // fields).
@@ -37,6 +36,15 @@ public class CustomerService {
 
         // 3. Saving to the Database
         return customerRepository.save(customer);
+    }
+
+    public Customer getCustomerById(Long customerId) {
+        // Implementation for retrieving a customer by their ID. This method will use
+        // the customerRepository to find the customer and return their details. If the
+        // customer is not found, it will throw an exception.
+
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + customerId));
     }
 }
 
