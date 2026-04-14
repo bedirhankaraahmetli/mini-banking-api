@@ -1,5 +1,6 @@
 package com.banking.mini_banking.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.banking.mini_banking.model.dto.CustomerCreateRequest;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Customer createCustomer(CustomerCreateRequest request) {
         // 1. Business Validations
@@ -31,7 +33,9 @@ public class CustomerService {
                 .identityNumber(request.getIdentityNumber())
                 .fullName(request.getFullName())
                 .email(request.getEmail())
-                .password(request.getPassword()) // In a real application, the password should be hashed before saving.
+                .password(passwordEncoder.encode(request.getPassword())) // Encoding the password using the
+                                                                         // PasswordEncoder bean defined in
+                                                                         // SecurityConfig.
                 .build();
 
         // 3. Saving to the Database

@@ -1,5 +1,7 @@
 package com.banking.mini_banking.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +22,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByEmail(String email);
     // Derived query method to check if a customer with the given email already
     // exists in the database.
+
+    Optional<Customer> findByEmail(String email);
+    // Derived query method to find a customer by their email. This will be used in
+    // the authentication process.
+
 }
 
 // Repository is responsible for data access and manipulation. It provides
