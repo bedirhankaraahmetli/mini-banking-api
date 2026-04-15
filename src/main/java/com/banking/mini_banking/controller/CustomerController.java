@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banking.mini_banking.model.dto.CustomerCreateRequest;
+import com.banking.mini_banking.model.dto.CustomerResponse;
 import com.banking.mini_banking.model.entity.Customer;
 import com.banking.mini_banking.service.CustomerService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController // Indicates that this class is a REST controller in the Spring framework. It
@@ -33,7 +35,7 @@ public class CustomerController {
                  // a
     // new customer.
     @Operation(summary = "Create a new customer", description = "Creates a new customer in the mini banking application.")
-    public ResponseEntity<Customer> createCustomer(@RequestBody CustomerCreateRequest request) {
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody CustomerCreateRequest request) {
         // The @RequestBody annotation indicates that the method parameter should be
         // bound to the body of the HTTP request. The incoming JSON will be
         // deserialized into a CustomerCreateRequest object.
@@ -49,18 +51,9 @@ public class CustomerController {
 
     @GetMapping("/{customerId}")
     @Operation(summary = "Get customer details", description = "Retrieves the details of a customer based on the provided customer ID.")
-    public ResponseEntity<Customer> getCustomerDetails(@PathVariable Long customerId) {
-        // The @PathVariable annotation is used to extract the customerId from the URL
-        // path. For example, if the request is made to /api/v1/customers/1, the
-        // customerId will be 1.
-
-        Customer customer = customerService.getCustomerById(customerId);
-        // Calls the service layer to retrieve the customer details based on the
-        // provided customer ID.
-
-        return ResponseEntity.ok(customer);
-        // Returns an HTTP 200 OK response with the customer details in the response
-        // body.
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long customerId) {
+        CustomerResponse customerResponse = customerService.getCustomerById(customerId);
+        return ResponseEntity.ok(customerResponse);
     }
 }
 

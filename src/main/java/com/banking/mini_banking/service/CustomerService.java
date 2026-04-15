@@ -3,7 +3,9 @@ package com.banking.mini_banking.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.banking.mini_banking.mapper.CustomerMapper;
 import com.banking.mini_banking.model.dto.CustomerCreateRequest;
+import com.banking.mini_banking.model.dto.CustomerResponse;
 import com.banking.mini_banking.model.entity.Customer;
 import com.banking.mini_banking.repository.CustomerRepository;
 
@@ -18,6 +20,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CustomerMapper customerMapper;
 
     public Customer createCustomer(CustomerCreateRequest request) {
         // 1. Business Validations
@@ -42,20 +45,27 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer getCustomerById(Long customerId) {
-        // Implementation for retrieving a customer by their ID. This method will use
-        // the customerRepository to find the customer and return their details. If the
-        // customer is not found, it will throw an exception.
-
-        return customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + customerId));
+    public CustomerResponse getCustomerById(Long id) {
+        // Retrieves a customer by their ID. If the customer is not found, it throws a
+        // RuntimeException with a message indicating that the customer was not found.
+        // If the customer is found, it maps the Customer entity to a CustomerResponse
+        // DTO using the CustomerMapper and returns it.
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+        return customerMapper.toResponse(customer);
     }
 }
 
-// The Service layer is responsible for containing the business logic of the
-// application. In this class, we have a method `createCustomer` that takes a
-// `CustomerCreateRequest` DTO as input. The method performs business
-// validations to ensure that there are no existing customers with the same
-// identity number or email. If the validations pass, it maps the DTO to a
-// `Customer` entity and saves it to the database using the
-// `CustomerRepository`. The method returns the saved `Customer` entity.
+// This CustomerService class is a Spring service component that contains
+// business logic related to customers in the mini banking application. It has
+// two main methods: createCustomer() for creating a new customer and
+// getCustomerById() for retrieving customer details by ID. The createCustomer()
+// method performs business validations to ensure that a customer with the same
+// identity number or email does not already exist, maps the incoming
+// CustomerCreateRequest DTO to a Customer entity, encodes the password, and
+// saves the customer to the database. The getCustomerById() method retrieves a
+// customer by their ID, throws an exception if the customer is not found, and
+// maps the Customer entity to a CustomerResponse DTO before returning it. The
+// service uses a CustomerRepository for database operations, a PasswordEncoder
+// for encoding passwords, and a CustomerMapper for mapping between entities and
+// DTOs.
