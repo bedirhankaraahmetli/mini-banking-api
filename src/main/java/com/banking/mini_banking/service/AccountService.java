@@ -1,10 +1,8 @@
 package com.banking.mini_banking.service;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
+import com.banking.mini_banking.grpc.NotificationRequest;
+import com.banking.mini_banking.grpc.NotificationResponse;
+import com.banking.mini_banking.grpc.NotificationServiceGrpc.NotificationServiceBlockingStub;
 import com.banking.mini_banking.model.dto.AccountCreateRequest;
 import com.banking.mini_banking.model.dto.MoneyTransferRequest;
 import com.banking.mini_banking.model.entity.Account;
@@ -14,6 +12,12 @@ import com.banking.mini_banking.repository.CustomerRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.client.inject.GrpcClient;
+
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,15 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
+
+    @GrpcClient("notification-service")
+    // This annotation injects a gRPC client for the notification service. The
+    // "notification-service" string should match the name of the gRPC service
+    // defined in your application configuration.
+    private NotificationServiceBlockingStub notificationStub;
+    // This is the gRPC client stub that will be used to send notifications to the
+    // notification service. The stub provides methods to call the gRPC service's
+    // endpoints.
 
     public Account createAccount(AccountCreateRequest request) {
         // Implementation for creating a new account based on the provided request.
@@ -71,6 +84,11 @@ public class AccountService {
         // accountRepository.
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
+
+        // 5. MICRO-SERVICE COMMUNICATION: After successfully transferring the money, we
+        // need to send a notification to the user. We will use gRPC to communicate with
+        // the notification service.
+        sendGrpcNotification(request.getFromAccountNumber(), request.getAmount());
     }
 
     // Simple method to generate a unique account number. In a real application, you
@@ -92,6 +110,32 @@ public class AccountService {
 
         return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new RuntimeException("Account not found with account number: " + accountNumber));
+    }
+
+    // For readability and maintainability, we seperate the gRPC notification logic
+    // into its own method. This method will be responsible for constructing the
+    // gRPC request and sending it to the notification service using the injected
+    // gRPC client stub. This separation allows us to keep the business logic of
+    // account management clean and focused, while delegating the responsibility of
+    // sending notifications to a dedicated method. This also makes it easier to
+    // modify the notification logic in the future without affecting the core
+    // account management functionality.
+    private void sendGrpcNotification(String accountNumber, BigDecimal amount) {
+        try {
+            // Construct the packet according to the Proto file format.
+            NotificationRequest grpcRequest = NotificationRequest.newBuilder()
+                    .setAccountNumber(accountNumber) // Set the account number in the gRPC request.
+                    .setAmount(amount.doubleValue()) // Set the amount in the gRPC request, converting it to a string.
+                    .setMessage("Transaction was completed successfully")
+                    .build(); // Build the gRPC request object.
+
+            // Send the gRPC request to the notification service and receive the response.
+            NotificationResponse grpcResponse = notificationStub.sendTransferNotification(grpcRequest);
+
+            System.out.println("gRPC Notification Response: " + grpcResponse.getResultMessage());
+        } catch (Exception e) {
+            System.err.println("Error occurred while sending gRPC notification: " + e.getMessage());
+        }
     }
 }
 

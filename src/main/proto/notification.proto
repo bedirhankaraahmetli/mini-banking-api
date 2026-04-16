@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.banking.mini_banking.grpc";
+option java_outer_classname = "NotificationProto";
+
+// Service name and job
+service NotificationService {
+    rpc SendTransferNotification (NotificationRequest) returns (NotificationResponse);
+}
+
+// Data format (Binary, instead of JSON)
+message NotificationRequest {
+    string account_number = 1;
+    double amount = 2;
+    string message = 3;
+}
+
+// Response format
+message NotificationResponse {
+    bool success = 1;
+    string result_message = 2;
+}
