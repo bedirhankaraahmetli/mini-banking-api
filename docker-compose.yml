@@ -1,17 +1,51 @@
 version: '3.8'
 
 services:
-  db:
+  # 1. Database Service (PostgreSQL)
+  postgres-db:
     image: postgres:15-alpine
-    container_name: banking-db
+    container_name: banking_db
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: banking_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - banking-network
 
+  # 2. Notification Service (gRPC Server)
+  notification-service:
+    build: ./notification-service
+    container_name: notification_service
+    ports:
+      - "8081:8081"
+      - "9090:9090"
+    networks:
+      - banking-network
+
+  # 3. Core API Service (Spring Boot Application)
+  core-api:
+    build: ./core-api
+    container_name: core_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+      - notification-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/banking_db
+      - GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS=static://notification-service:9090
+    networks:
+      - banking-network
+
+# Network for containers to communicate
+networks:
+  banking-network:
+    driver: bridge
+
+# Volume for persistent database storage
 volumes:
   postgres_data:

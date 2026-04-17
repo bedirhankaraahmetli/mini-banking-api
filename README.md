@@ -1,56 +1,60 @@
-# Mini Banking API
+# 🏦 Core Banking System (Microservices Architecture)
 
-An enterprise-oriented, robust RESTful API for a banking application, built with modern Java and Spring Boot. 
+![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-brightgreen?style=for-the-badge&logo=spring)
+![gRPC](https://img.shields.io/badge/gRPC-1.60-blue?style=for-the-badge&logo=google)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge&logo=postgresql)
 
-## 🚀 Tech Stack
+This repository contains a modern, scalable core banking system built with **Spring Boot 3** and **Java 21**. The project is structured as a **Monorepo** consisting of a main REST API and an asynchronous Notification Service communicating via **gRPC**.
 
-* **Language:** Java 21
-* **Framework:** Spring Boot 3.x
-* **Database:** PostgreSQL (Dockerized)
-* **ORM:** Spring Data JPA / Hibernate
-* **Documentation:** Swagger / OpenAPI 3.0
-* **Tools:** Maven, Lombok, Docker Compose
+## 🏗️ System Architecture
 
-## ⚙️ Current Features
+```mermaid
+graph TD
+    Client([Mobile/Web Client]) -->|REST API (JSON/JWT)| CoreAPI[Core Banking API :8080]
+    CoreAPI -->|ACID Transactions| DB[(PostgreSQL)]
+    CoreAPI -->|gRPC (Binary/Protobuf)| NotifService[Notification Service :9090]
+    NotifService -.->|SMS / Email| User([Customer])
+```
 
-* **Customer Management:** Create and manage bank customers with strict data validation (Unique Identity Number and Email).
-* *More features coming soon (Account Management, Transactions, Clean Architecture, and Security).*
+## ✨ Key Features & Technical Stack
 
-## 🛠️ Getting Started
+* **Clean Architecture:** Strict separation of concerns using DTOs, Mappers, and Fail-Fast Data Validation (`@Valid`).
+* **Security First:** Stateless authentication utilizing **Spring Security** and **JWT (JSON Web Tokens)**. Passwords are cryptographically hashed using `BCrypt`.
+* **Microservices Communication:** High-performance, low-latency inter-service communication using **gRPC** and **Protocol Buffers (.proto)**.
+* **ACID Compliance:** Guaranteed transactional integrity during money transfers using `@Transactional`.
+* **Robust Error Handling:** Centralized API error management using `@RestControllerAdvice` to prevent internal server stack traces from leaking.
+* **Unit Testing:** Business logic validated mathematically without database connections using **JUnit 5** and **Mockito**.
+
+## 📂 Monorepo Structure
+
+* `/core-api`: The main banking brain. Handles users, accounts, security, and money transfers.
+* `/notification-service`: A lightweight gRPC server listening on port 9090 to catch transfer events and simulate customer notifications.
+
+## 🚀 Getting Started
 
 ### Prerequisites
+* Java 21+
+* Maven
+* PostgreSQL (Running on `localhost:5432`)
 
-* [Java Development Kit (JDK) 17 or higher](https://www.oracle.com/tr/java/technologies/downloads/#java21)
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-a
-### Installation & Run
+### 1. Start the Notification Server
+Open a terminal in the `/notification-service` directory and run:
+```bash
+./mvnw clean spring-boot:run
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/bedirhankaraahmetli/mini-banking-api.git](https://github.com/bedirhankaraahmetli/mini-banking-api.git)
-   cd mini-banking-api
-    ````
+### 2. Start the Core API
+Open a new terminal in the `/core-api` directory and run:
+```bash
+./mvnw clean spring-boot:run
+```
 
-2.  **Start the PostgreSQL database via Docker:**
+### 3. Test the API
+* Navigate to the Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+* Register a new user, log in to obtain your Bearer Token, and test the transfer endpoint.
+* Watch the `notification-service` terminal catch the gRPC signal in real-time!
 
-    ```bash
-    docker-compose up -d
-    ```
-
-3.  **Run the application using Maven Wrapper:**
-
-    ```bash
-    ./mvnw clean spring-boot:run
-    ```
-
-    *(For Windows PowerShell/CMD, use `.\mvnw clean spring-boot:run`)*
-
-## 📖 API Documentation
-
-This project uses Springdoc OpenAPI for self-documenting API endpoints. Once the application is running, you can explore and test the API directly via the Swagger UI:
-
-👉 **[Swagger UI: http://localhost:8080/swagger-ui/index.html](https://www.google.com/search?q=http://localhost:8080/swagger-ui/index.html)**
-
------
-
-*Developed with enterprise architecture principles.*
+---
+*Developed as a comprehensive engineering simulation showcasing enterprise-level backend practices.*
+```
