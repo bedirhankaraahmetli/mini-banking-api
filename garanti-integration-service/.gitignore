@@ -31,10 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Environments ###
-.env
-.vscode/launch.json
-
-### Others ###
-notes.txt

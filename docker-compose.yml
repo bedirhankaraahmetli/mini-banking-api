@@ -41,6 +41,15 @@ services:
     networks:
       - banking-network
 
+  # 4. Garanti Integration Service (Spring Boot Application)
+  garanti-integration-service:
+    build: ./garanti-integration-service
+    ports:
+      - "8081:8081"
+    environment:
+      - GARANTI_CLIENT_ID=${GARANTI_CLIENT_ID}
+      - GARANTI_CLIENT_SECRET=${GARANTI_CLIENT_SECRET}
+
 # Network for containers to communicate
 networks:
   banking-network:
@@ -49,3 +58,4 @@ networks:
 # Volume for persistent database storage
 volumes:
   postgres_data:
+

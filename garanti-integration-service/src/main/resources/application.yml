@@ -1,0 +1,14 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: garanti-integration-service
+  config:
+    import: optional:file:.env[.properties] 
+
+garanti:
+  api:
+    base-url: "https://apis.garantibbva.com.tr" 
+    client-id: ${GARANTI_CLIENT_ID:bulunamadi_id}
+    client-secret: ${GARANTI_CLIENT_SECRET:bulunamadi_secret}
