@@ -1,10 +1,9 @@
 package com.banking.notification_service.service;
 
-import java.math.BigDecimal;
-
 import com.banking.mini_banking.grpc.NotificationRequest;
 import com.banking.mini_banking.grpc.NotificationResponse;
 import com.banking.mini_banking.grpc.NotificationServiceGrpc;
+
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 

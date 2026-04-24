@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Map;
 
@@ -39,7 +40,9 @@ public class GarantiAuthService {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(formData)
                 .retrieve()
-                .body(Map.class);
+                .body(new ParameterizedTypeReference<Map<String, Object>>() {
+                }); // Using ParameterizedTypeReference to specify the expected response type as
+                    // Map<String, Object>
 
         // Extracting the "access_token" value from the returned JSON
         String token = (String) response.get("access_token");
