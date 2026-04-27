@@ -15,7 +15,7 @@ import com.banking.garantiintegrationservice.service.GarantiLocationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/locations")
+@RequestMapping("/api/v1/integration/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
