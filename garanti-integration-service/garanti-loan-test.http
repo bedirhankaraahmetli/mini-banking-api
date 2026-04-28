@@ -1,0 +1,7 @@
+POST http://localhost:8082/api/v1/integration/loans/calculate
+Content-Type: application/json
+
+{
+  "loanAmount": 50000,
+  "dueNum": 12
+}
