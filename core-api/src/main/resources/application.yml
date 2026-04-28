@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/banking_db
+    url: jdbc:postgresql://localhost:5433/banking_db
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
@@ -12,6 +12,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mvc:
+    log-request-details: true
 
 # gRPC client configuration for the notification service. This section defines how the AccountService will connect to the notification service using gRPC. The address is set to localhost:9090, and the negotiation type is set to plaintext, which means that the communication will not be encrypted. In a production environment, you would typically use TLS for secure communication between services.
 grpc:
@@ -19,3 +21,9 @@ grpc:
     notification-service:
       address: static://localhost:9090
       negotiation-type: plaintext
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+  

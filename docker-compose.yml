@@ -27,19 +27,19 @@ services:
       - banking-network
 
   # 3. Core API Service (Spring Boot Application)
-  core-api:
-    build: ./core-api
-    container_name: core_api
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres-db
-      - notification-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/banking_db
-      - GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS=static://notification-service:9090
-    networks:
-      - banking-network
+  # core-api:
+  #   build: ./core-api
+  #   container_name: core_api
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - postgres-db
+  #     - notification-service
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/banking_db
+  #     - GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS=static://notification-service:9090
+  #   networks:
+  #     - banking-network
 
   # 4. Garanti Integration Service (Spring Boot Application)
   garanti-integration-service:
