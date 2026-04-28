@@ -6,18 +6,44 @@ import java.util.List;
 
 @Data
 public class LoanResponseDto {
-    private List<InstallmentDetail> unitList;
-    private String returnMessage;
-    private int returnCode;
+    private LoanData data; // Done according to the JSON response from Garanti API
+    private LoanResult result; // Done according to the JSON response from Garanti API
+
+    // --- Nested Classes ---
+
+    @Data
+    public static class LoanData {
+        private List<InstallmentDetail> installments;
+        private LoanTotal total;
+    }
 
     @Data
     public static class InstallmentDetail {
-        private Integer installmentNumber; // Installment number (e.g., 1, 2, 3, ...)
-        private BigDecimal installmentAmount; // Monthly installment amount (e.g., 300.00)
-        private BigDecimal interestAmount; // Interest amount for the installment (e.g., 50.00)
-        private BigDecimal taxAmount; // Tax amount for the installment (e.g., 20.00)
-        private BigDecimal fundAmount; // Principal amount for the installment (e.g., 250.00)
-        private BigDecimal remainingCapitalAmount; // Remaining capital after the installment (e.g., 9750.00)
-        private String installmentDate; // Due date for the installment (e.g., "2024-07-01")
+        private Integer installmentNumber;
+        private String installmentDate;
+        private BigDecimal installmentAmount;
+        private BigDecimal capitalAmount;
+        private BigDecimal interestAmount;
+        private BigDecimal fundAmount;
+        private BigDecimal taxamount;
+        private BigDecimal remainingCapitalAmount;
     }
+
+    @Data
+    public static class LoanTotal {
+        private Integer dueNum;
+        private BigDecimal installmentAmount;
+        private BigDecimal capitalAmount;
+        private BigDecimal totalInstallmentAmount;
+        private BigDecimal annualCostRate;
+        private BigDecimal interestAmount;
+        private BigDecimal expenseAmount;
+    }
+
+    @Data
+    public static class LoanResult {
+        private Integer code;
+        private String info;
+    }
+
 }
